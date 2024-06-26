@@ -28,7 +28,7 @@ namespace EWalletBusinessLogic
         {
             bool result = false;
             var account = userServices.GetUserByAccNum(accountNumber);
-            if (account != null && account.money > amount)
+            if (account != null && account.money >= amount)
             {
                 account.money = account.money - amount;
                 sqlDbData.UpdateMoney(account);
@@ -36,7 +36,17 @@ namespace EWalletBusinessLogic
                 return result;
             }
             return result;
+        }
 
+        public void transferMoney( int transferTo, int amount)
+        {
+            User accountTransfer = userServices.GetUserByAccNum(transferTo);
+
+            if (accountTransfer.accountNumber.Equals(transferTo))
+            {
+                accountTransfer.money = accountTransfer.money + amount;
+                sqlDbData.UpdateMoney(accountTransfer);
+            }
         }
 
     }

@@ -66,7 +66,7 @@ namespace EWalletDataLayer
                     accountNumber = Convert.ToInt32(reader["accountNumber"]),
                     userName = reader["userName"].ToString(),
                     money = Convert.ToDecimal(reader["money"]),
-                    pinNumber = reader["userName"].ToString(),
+                    pinNumber = reader["pinNumber"].ToString(),
                 };
             }
             sqlConnection.Close();
@@ -140,7 +140,7 @@ namespace EWalletDataLayer
 
         public void DeleteUser(int accountNumber)
         {
-            string deleteStatement = $"DELETE FROM users WHERE accountNumber = @accountNumber";
+            string deleteStatement = $"DELETE FROM Records WHERE accountNumber = @accountNumber";
             SqlCommand deleteCommand = new SqlCommand(deleteStatement, sqlConnection);
             sqlConnection.Open();
 

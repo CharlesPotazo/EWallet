@@ -126,7 +126,14 @@ namespace EWalletUI
                             }
                             break;
                         case 3:
-                            //finifigure out pa po huhu  // Di ko na po magifure out tinry ko po tawagin yung cashin and cashout, tinry ko na rin po gumawa bago method
+                            Console.Write("Send to:(input account number) ");
+                            int TransferTo = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Amount: ");
+                            int amount = Convert.ToInt32(Console.ReadLine());
+
+                            cashService.transferMoney( TransferTo, amount);
+                            deductMoney(user, amount);
+                            Console.Write($"Succefully Transferred {amount} to {TransferTo} ");
                             break;
                         case 4:
                             GreetingPage();
@@ -166,8 +173,24 @@ namespace EWalletUI
                                 }
                                 else if (option == 3)
                                 {
-                                   
+                                    Console.WriteLine("Are you sure?:[Yes/No]");
+                                    string answer = Console.ReadLine().ToLower().Trim(); ;
 
+                                    if (answer == "yes")
+                                    {
+                                        Console.WriteLine("Enter Pin Number:");
+                                        string PinNumber = Console.ReadLine();
+                                        if (PinNumber == user.pinNumber)
+                                        {Console.WriteLine("We hope we give you the best service! Until we meet again c-casher HAHA");
+                                             GreetingPage();
+                                             userService.DeleteUser(accountNumber); //Itu naman po di ko mapaga huhuh 
+                                             
+     
+                                        }else
+                                            {
+                                                Console.WriteLine("Withdraw all the money first");
+                                            }
+                                    }
                                 }
                                 else if (option == 4)
                                 {
@@ -209,5 +232,12 @@ namespace EWalletUI
 
         }
 
+
+
+        private static void deductMoney(User user, int amount) //miss ito pa lang po yung way na napagana ko feel ko po sa mga constructors yung mali ... FIFIGURE OUT KO PA PO HUHU
+        {
+            CashServices cashServices = new CashServices();
+            cashServices.CashOut(user.accountNumber, amount);
+        }
     }
 }

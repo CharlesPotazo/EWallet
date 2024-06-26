@@ -60,7 +60,19 @@ namespace EWalletBusinessLogic
 
         public void DeleteUser(int accountNumber)
         {
-            data.DeleteUser(accountNumber);
+            
+            var account = GetUserByAccNum(accountNumber);
+
+            
+            if (account != null && account.money == 0)
+            {
+                data.DeleteUser(accountNumber);
+               
+            }
+            else{
+            
+            }
+           
         }
     }
 }

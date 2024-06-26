@@ -12,7 +12,8 @@ namespace EWalletUI
             GreetingPage();
         }
 
-        public static void GreetingPage() {
+        public static void GreetingPage()
+        {
             Console.WriteLine("------------------------------------------");
             Console.WriteLine("|           Welcome to (C)-cash          |");
             Console.WriteLine("|         *endorser BINI PICTURE*        |");
@@ -23,7 +24,7 @@ namespace EWalletUI
             try
             {
                 int choice = Convert.ToInt32(Console.ReadLine());
-            
+
                 switch (choice)
                 {
                     case 1:
@@ -37,14 +38,16 @@ namespace EWalletUI
                         GreetingPage();
                         break;
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine("That is not a number!");
                 GreetingPage();
             }
         }
 
-        public static void Login() {
+        public static void Login()
+        {
             UserServices loginService = new UserServices();
 
             try
@@ -73,12 +76,14 @@ namespace EWalletUI
                         GreetingPage();
                     }
                 }
-            }catch{ }
+            }
+            catch { }
             Console.WriteLine("The inputted Value is in wrong format ");
             Login();
         }
 
-        public static void Menu(int accountNumber) {
+        public static void Menu(int accountNumber)
+        {
 
             while (true)
             {
@@ -86,7 +91,7 @@ namespace EWalletUI
                 CashServices cashService = new CashServices();
                 var user = userService.GetUserByAccNum(accountNumber);
 
-              
+
                 Console.WriteLine("------------------------------------------------------");
                 Console.WriteLine("|                   Welcome to (C)-cash              |");
                 Console.WriteLine("|                 *endorser BINI PICTURE*            |");
@@ -112,17 +117,13 @@ namespace EWalletUI
                             {
                                 Console.WriteLine($"You successfully withdrawed {CashOutAmount} to your account");
                             }
-                            else {
+                            else
+                            {
                                 Console.WriteLine("The amount you are trying to cash out is not valid");
                             }
                             break;
                         case 3:
-                            Console.Write("Send to:(input account number) ");
-                            int TransferTo = Convert.ToInt32(Console.ReadLine());
-                            Console.Write("Amount: ");
-                            int amount = Convert.ToInt32(Console.ReadLine());
-                            cashService.CashOut(accountNumber, amount);
-                            cashService.CashIn(TransferTo, amount);
+                            //finifigure out pa po huhu
                             break;
                         case 4:
                             GreetingPage();
@@ -132,15 +133,17 @@ namespace EWalletUI
 
                     }
                 }
-                catch {
+                catch
+                {
                     Console.WriteLine("Invalid inputted format");
 
                 }
-            } 
-        
+            }
+
         }
 
-        public static void Register() {
+        public static void Register()
+        {
             Console.WriteLine("------------------------------------------");
             Console.WriteLine("|                Register                |");
             Console.Write("|Enter your username:  ");
@@ -153,9 +156,9 @@ namespace EWalletUI
             int accountNumber = int.Parse(Console.ReadLine());
 
             UserServices userService = new UserServices();
-            userService.RegisterUser(accountNumber, userName,pinNumber);
+            userService.RegisterUser(accountNumber, userName, pinNumber);
 
-            Console.WriteLine("You are now Registered! "+ userName);
+            Console.WriteLine("You are now Registered! " + userName);
 
 
         }

@@ -9,19 +9,20 @@ namespace EWalletBusinessLogic
     public class UserServices
     {
         UserData data = new UserData();
-        SqlDbData sqlDbData= new SqlDbData();
-        public UserServices() { 
-         UserData data = new UserData();
-         SqlDbData sqlDbData = new SqlDbData();
+        SqlDbData sqlDbData = new SqlDbData();
+        public UserServices()
+        {
+            UserData data = new UserData();
+            SqlDbData sqlDbData = new SqlDbData();
         }
-        
+
 
         public List<User> GetAllUser()
         {
             return data.GetUsers();
         }
 
-        
+
         public bool verifyUser(int accountNumber, string pinNumber)
         {
             bool result = new bool();
@@ -41,7 +42,7 @@ namespace EWalletBusinessLogic
             return sqlDbData.GetUserByAccNum(accountNumber);
         }
 
-        public void RegisterUser( int accountNumber, string userName, string pinNumber)
+        public void RegisterUser(int accountNumber, string userName, string pinNumber)
         {
             // Here you can add business logic such as validation, hashing the pinNumber, etc.
             sqlDbData.AddUser(accountNumber, userName, pinNumber);

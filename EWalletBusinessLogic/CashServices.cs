@@ -13,7 +13,7 @@ namespace EWalletBusinessLogic
     public class CashServices
     {
         UserServices userServices = new UserServices();
-        SqlDbData sqlDbData= new SqlDbData();
+        SqlDbData sqlDbData = new SqlDbData();
         public void CashIn(int accountNumber, int amount)
         {
             var account = userServices.GetUserByAccNum(accountNumber);
@@ -39,14 +39,5 @@ namespace EWalletBusinessLogic
 
         }
 
-        public void transferMoney(int accountNumber, int amount)
-        {
-            var account = userServices.GetUserByAccNum(accountNumber);
-            if (account != null)
-            {
-                account.money = account.money - amount;
-                sqlDbData.UpdateMoney(account);
-            }
-        }
     }
 }

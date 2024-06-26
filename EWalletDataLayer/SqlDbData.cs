@@ -52,26 +52,26 @@ namespace EWalletDataLayer
 
         public User GetUserByAccNum(int accountNumber)
         {
-                sqlConnection.Open();
-               
-                SqlCommand findCommand = new SqlCommand("SELECT * FROM Records WHERE accountNumber = @accountNumber", sqlConnection);
-                findCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            sqlConnection.Open();
 
-                SqlDataReader reader = findCommand.ExecuteReader();
-                if (reader.Read())
+            SqlCommand findCommand = new SqlCommand("SELECT * FROM Records WHERE accountNumber = @accountNumber", sqlConnection);
+            findCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+
+            SqlDataReader reader = findCommand.ExecuteReader();
+            if (reader.Read())
+            {
+                return new User
                 {
-                    return new User
-                    {
-                        accountNumber = Convert.ToInt32(reader["accountNumber"]),
-                        userName = reader["userName"].ToString(),
-                        money = Convert.ToDecimal(reader["money"])
-                    };
-                }
+                    accountNumber = Convert.ToInt32(reader["accountNumber"]),
+                    userName = reader["userName"].ToString(),
+                    money = Convert.ToDecimal(reader["money"])
+                };
+            }
             sqlConnection.Close();
             return null;
         }
 
-        
+
 
         public void UpdateMoney(User user)
         {
@@ -87,7 +87,7 @@ namespace EWalletDataLayer
             sqlConnection.Close();
         }
 
-        public void AddUser(int accountNumber,string userName, string pinNumber )
+        public void AddUser(int accountNumber, string userName, string pinNumber)
         {
             decimal money = 0;
 

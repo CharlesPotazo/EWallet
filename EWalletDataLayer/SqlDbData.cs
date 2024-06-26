@@ -109,23 +109,20 @@ namespace EWalletDataLayer
         }
 
 
-        //--------------------------------------
-        public int UpdateUser(string username, string password)
+        
+        public void UpdateUserPassword(int accountNumber, string pinNumber)
         {
-            int success;
-
-            string updateStatement = $"UPDATE users SET password = @Password WHERE username = @username";
+            string updateStatement = $"UPDATE Records SET pinNumber = @pinNumber WHERE accountNumber = @accountNumber";
             SqlCommand updateCommand = new SqlCommand(updateStatement, sqlConnection);
             sqlConnection.Open();
 
-            updateCommand.Parameters.AddWithValue("@Password", password);
-            updateCommand.Parameters.AddWithValue("@username", username);
+            updateCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            updateCommand.Parameters.AddWithValue("@pinNumber", pinNumber);
 
-            success = updateCommand.ExecuteNonQuery();
+            updateCommand.ExecuteNonQuery();
 
             sqlConnection.Close();
 
-            return success;
         }
 
         public int DeleteUser(string username)

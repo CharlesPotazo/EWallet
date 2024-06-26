@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using EWalletModels;
+using System.Numerics;
 
 namespace EWalletDataLayer
 {
@@ -22,6 +23,11 @@ namespace EWalletDataLayer
         {
             users = sqlData.GetUsers();
             return users;
+        }
+
+        public void UpdateUserPassword(int accountNumber,string pinNumber)
+        {
+            sqlData.UpdateUserPassword(accountNumber, pinNumber);
         }
     }
 }

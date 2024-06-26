@@ -1,6 +1,8 @@
 ﻿using EWalletBusinessLogic;
 using EWalletModels;
 using System;
+using System.ComponentModel.Design;
+using System.Numerics;
 using System.Security.Principal;
 
 namespace EWalletUI
@@ -97,7 +99,7 @@ namespace EWalletUI
                 Console.WriteLine("|                 *endorser BINI PICTURE*            |");
                 Console.WriteLine("|             *with Salamin,Salamin BG music*        |");
                 Console.WriteLine($"|\n|Welcome: {user.userName}, Balance: {user.money}");
-                Console.Write("|\n| Choose a number:                                   |\n|(1.Cash In) (2.Cash Out) (3.Transfer Money) (4.Exit)|\n");
+                Console.Write("|\n| Choose a number:                                   |\n|(1.Cash In) (2.Cash Out) (3.Transfer Money) (4.Exit)|\n|(5.settings)                                        |\n");
                 try
                 {
                     int choice = Convert.ToInt32(Console.ReadLine());
@@ -128,9 +130,38 @@ namespace EWalletUI
                         case 4:
                             GreetingPage();
                             break;
+                        case 5:
+                            while (true) {
+                                Console.WriteLine("Settings\n Choose a number\n(1.Rename Username) (2.Update Password) (3. Delete Account) (4.Back to Menu)");
+                                int option = Convert.ToInt32(Console.ReadLine());
+
+                                if (option == 1)
+                                {
+                                    
+                                }
+                                else if (option == 2)
+                                {
+                                    Console.WriteLine("What is your new Pin Number?");
+                                    string newPinNumber = Console.ReadLine();
+                                    
+                                    Console.WriteLine("are you sure?[Yes/No]");
+                                    string answer = Console.ReadLine().Trim().ToUpper();
+                                    if( answer == "YES") { userService.UpdateUserPassword(accountNumber, newPinNumber);
+                                    Console.WriteLine($"You have successfully change your Pin Number to {newPinNumber}");
+                                    }
+                                }
+                                else if (option == 3)
+                                {
+                                    
+                                }
+                                else if (option == 4)
+                                {
+                                    break;
+                                }
+                            }
+                            break;
                         default:
                             break;
-
                     }
                 }
                 catch

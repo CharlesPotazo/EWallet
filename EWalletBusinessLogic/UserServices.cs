@@ -3,6 +3,7 @@ using EWalletDataLayer;
 using System.Diagnostics.CodeAnalysis;
 using System.Data.SqlClient;
 using System.Security.Principal;
+using System.Numerics;
 
 namespace EWalletBusinessLogic
 {
@@ -44,13 +45,14 @@ namespace EWalletBusinessLogic
 
         public void RegisterUser(int accountNumber, string userName, string pinNumber)
         {
-            // Here you can add business logic such as validation, hashing the pinNumber, etc.
             sqlDbData.AddUser(accountNumber, userName, pinNumber);
         }
 
-        //public bool CreateUser(int accountNumber, string pinNumber, string userName)
-        //{
-        //    //return sqlDbData.AddUser(accountNumber, pinNumber, userName);
-        //}
+        public void UpdateUserPassword(int accountNumber,string pinNumber)
+        {
+            data.UpdateUserPassword(accountNumber, pinNumber);
+        }
+
+
     }
 }

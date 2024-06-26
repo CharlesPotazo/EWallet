@@ -34,5 +34,10 @@ namespace EWalletDataLayer
         {
             sqlData.UpdateUsername(accountNumber, username);
         }
+
+        public void DeleteUser(int accountNumber)
+        {
+            sqlData.DeleteUser(accountNumber);
+        }
     }
 }

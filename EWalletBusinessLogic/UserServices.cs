@@ -58,5 +58,9 @@ namespace EWalletBusinessLogic
             data.UpdateUsername(accountNumber, username);
         }
 
+        public void DeleteUser(int accountNumber)
+        {
+            data.DeleteUser(accountNumber);
+        }
     }
 }

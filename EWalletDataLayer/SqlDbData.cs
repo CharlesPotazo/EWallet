@@ -8,6 +8,7 @@ using EWalletModels;
 using System.Security.Principal;
 using System.Numerics;
 using System.Reflection.PortableExecutable;
+using System.Data.SqlTypes;
 
 namespace EWalletDataLayer
 {
@@ -64,7 +65,8 @@ namespace EWalletDataLayer
                 {
                     accountNumber = Convert.ToInt32(reader["accountNumber"]),
                     userName = reader["userName"].ToString(),
-                    money = Convert.ToDecimal(reader["money"])
+                    money = Convert.ToDecimal(reader["money"]),
+                    pinNumber = reader["userName"].ToString(),
                 };
             }
             sqlConnection.Close();
@@ -136,21 +138,18 @@ namespace EWalletDataLayer
             sqlConnection.Close();
         }
 
-        public int DeleteUser(string username)
+        public void DeleteUser(int accountNumber)
         {
-            int success;
-
-            string deleteStatement = $"DELETE FROM users WHERE username = @username";
+            string deleteStatement = $"DELETE FROM users WHERE accountNumber = @accountNumber";
             SqlCommand deleteCommand = new SqlCommand(deleteStatement, sqlConnection);
             sqlConnection.Open();
 
-            deleteCommand.Parameters.AddWithValue("@username", username);
+            deleteCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
 
-            success = deleteCommand.ExecuteNonQuery();
+            deleteCommand.ExecuteNonQuery();
 
             sqlConnection.Close();
 
-            return success;
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Numerics;
 using System.Security.Principal;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EWalletUI
 {
@@ -125,13 +126,15 @@ namespace EWalletUI
                             }
                             break;
                         case 3:
-                            //finifigure out pa po huhu
+                            //finifigure out pa po huhu  // Di ko na po magifure out tinry ko po tawagin yung cashin and cashout, tinry ko na rin po gumawa bago method
                             break;
                         case 4:
                             GreetingPage();
                             break;
                         case 5:
-                            while (true) {
+
+                            while (true)
+                            {
                                 Console.WriteLine("Settings\n Choose a number\n(1.Rename Username) (2.Update Password) (3. Delete Account) (4.Back to Menu)");
                                 int option = Convert.ToInt32(Console.ReadLine());
 
@@ -152,26 +155,29 @@ namespace EWalletUI
                                 {
                                     Console.WriteLine("What is your new Pin Number?");
                                     string newPinNumber = Console.ReadLine();
-                                    
+
                                     Console.WriteLine("are you sure?[Yes/No]");
                                     string answer = Console.ReadLine().Trim().ToUpper();
-                                    if( answer == "YES") {userService.UpdateUserPassword(accountNumber, newPinNumber);
-                                    Console.WriteLine($"You have successfully change your Pin Number to {newPinNumber}");
+                                    if (answer == "YES")
+                                    {
+                                        userService.UpdateUserPassword(accountNumber, newPinNumber);
+                                        Console.WriteLine($"You have successfully change your Pin Number to {newPinNumber}");
                                     }
                                 }
                                 else if (option == 3)
                                 {
-                                    
+                                   
+
                                 }
                                 else if (option == 4)
                                 {
                                     break;
                                 }
                             }
+
+
                             break;
-                        default:
-                            break;
-                    }
+                            }
                 }
                 catch
                 {

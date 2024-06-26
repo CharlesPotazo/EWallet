@@ -107,8 +107,6 @@ namespace EWalletDataLayer
             sqlConnection.Close();
 
         }
-
-
         
         public void UpdateUserPassword(int accountNumber, string pinNumber)
         {
@@ -123,6 +121,19 @@ namespace EWalletDataLayer
 
             sqlConnection.Close();
 
+        }
+        public void UpdateUsername(int accountNumber, string userName)
+        {
+            string updateStatement = $"UPDATE Records SET userName = @userName WHERE accountNumber = @accountNumber";
+            SqlCommand updateCommand = new SqlCommand(updateStatement, sqlConnection);
+            sqlConnection.Open();
+
+            updateCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
+            updateCommand.Parameters.AddWithValue("@userName", userName);
+
+            updateCommand.ExecuteNonQuery();
+
+            sqlConnection.Close();
         }
 
         public int DeleteUser(string username)

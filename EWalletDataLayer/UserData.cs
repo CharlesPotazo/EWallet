@@ -29,5 +29,10 @@ namespace EWalletDataLayer
         {
             sqlData.UpdateUserPassword(accountNumber, pinNumber);
         }
+
+        public void UpdateUsername(int accountNumber, string username)
+        {
+            sqlData.UpdateUsername(accountNumber, username);
+        }
     }
 }

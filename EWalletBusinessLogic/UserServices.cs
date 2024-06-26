@@ -53,6 +53,10 @@ namespace EWalletBusinessLogic
             data.UpdateUserPassword(accountNumber, pinNumber);
         }
 
+        public void UpdateUsername(int accountNumber, string username)
+        {
+            data.UpdateUsername(accountNumber, username);
+        }
 
     }
 }

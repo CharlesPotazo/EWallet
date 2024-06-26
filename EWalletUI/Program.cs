@@ -137,7 +137,16 @@ namespace EWalletUI
 
                                 if (option == 1)
                                 {
-                                    
+                                    Console.WriteLine("What is your new username Number?");
+                                    string newUserName = Console.ReadLine();
+
+                                    Console.WriteLine("are you sure?[Yes/No]");
+                                    string answer = Console.ReadLine().Trim().ToUpper();
+                                    if (answer == "YES")
+                                    {
+                                        userService.UpdateUsername(accountNumber, newUserName);
+                                        Console.WriteLine($"You have successfully change your User Number to {newUserName}");
+                                    }
                                 }
                                 else if (option == 2)
                                 {
@@ -146,7 +155,7 @@ namespace EWalletUI
                                     
                                     Console.WriteLine("are you sure?[Yes/No]");
                                     string answer = Console.ReadLine().Trim().ToUpper();
-                                    if( answer == "YES") { userService.UpdateUserPassword(accountNumber, newPinNumber);
+                                    if( answer == "YES") {userService.UpdateUserPassword(accountNumber, newPinNumber);
                                     Console.WriteLine($"You have successfully change your Pin Number to {newPinNumber}");
                                     }
                                 }

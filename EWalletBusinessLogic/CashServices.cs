@@ -24,7 +24,22 @@ namespace EWalletBusinessLogic
             }
         }
 
-        public void CashOut(int accountNumber, int amount)
+        public bool CashOut(int accountNumber, int amount)
+        {
+            bool result = false;
+            var account = userServices.GetUserByAccNum(accountNumber);
+            if (account != null && account.money > amount)
+            {
+                account.money = account.money - amount;
+                sqlDbData.UpdateMoney(account);
+                result = true;
+                return result;
+            }
+            return result;
+
+        }
+
+        public void transferMoney(int accountNumber, int amount)
         {
             var account = userServices.GetUserByAccNum(accountNumber);
             if (account != null)

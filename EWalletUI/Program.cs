@@ -1,5 +1,4 @@
 ﻿using EWalletBusinessLogic;
-using EWalletDataLayer;
 using EWalletModels;
 using System;
 using System.Security.Principal;
@@ -88,12 +87,12 @@ namespace EWalletUI
                 var user = userService.GetUserByAccNum(accountNumber);
 
               
-                Console.WriteLine("------------------------------------------");
-                Console.WriteLine("|           Welcome to (C)-cash          |");
-                Console.WriteLine("|         *endorser BINI PICTURE*        |");
-                Console.WriteLine("|     *with Salamin,Salamin BG music*    |");
+                Console.WriteLine("------------------------------------------------------");
+                Console.WriteLine("|                   Welcome to (C)-cash              |");
+                Console.WriteLine("|                 *endorser BINI PICTURE*            |");
+                Console.WriteLine("|             *with Salamin,Salamin BG music*        |");
                 Console.WriteLine($"|\n|Welcome: {user.userName}, Balance: {user.money}");
-                Console.Write("|\n|Choose a number:                        |\n|(1. Cash In) (2. Cash Out) (3. Exit)    |\n");
+                Console.Write("|\n| Choose a number:                                   |\n|(1.Cash In) (2.Cash Out) (3.Transfer Money) (4.Exit)|\n");
                 try
                 {
                     int choice = Convert.ToInt32(Console.ReadLine());
@@ -108,10 +107,24 @@ namespace EWalletUI
                         case 2:
                             Console.Write("Enter amount to withdraw: ");
                             int CashOutAmount = Convert.ToInt32(Console.ReadLine());
-                            cashService.CashOut(accountNumber, CashOutAmount);
-                            Console.WriteLine("Succefully");
+                            bool result = cashService.CashOut(accountNumber, CashOutAmount);
+                            if (result)
+                            {
+                                Console.WriteLine($"You successfully withdrawed {CashOutAmount} to your account");
+                            }
+                            else {
+                                Console.WriteLine("The amount you are trying to cash out is not valid");
+                            }
                             break;
                         case 3:
+                            Console.Write("Send to:(input account number) ");
+                            int TransferTo = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Amount: ");
+                            int amount = Convert.ToInt32(Console.ReadLine());
+                            cashService.CashOut(accountNumber, amount);
+                            cashService.CashIn(TransferTo, amount);
+                            break;
+                        case 4:
                             GreetingPage();
                             break;
                         default:

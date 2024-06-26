@@ -84,26 +84,25 @@ namespace EWalletDataLayer
             sqlConnection.Close();
         }
 
-        public int AddUser(int accountNumber, string pinNumber, string userName)
+        public void AddUser(int accountNumber,string userName, string pinNumber )
         {
-            int success;
+            decimal money = 0;
 
-            string insertStatement = "INSERT INTO Records VALUES (@accountNumber, @pinNumber, @userName)";
+            string insertStatement = "INSERT INTO Records (AccountNumber, UserName, PinNumber, money) VALUES (@accountNumber, @userName, @pinNumber, @money)";
 
             SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection);
 
             insertCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
-            insertCommand.Parameters.AddWithValue("@pinNumber", pinNumber);
             insertCommand.Parameters.AddWithValue("@userName", userName);
-            
-            
+            insertCommand.Parameters.AddWithValue("@pinNumber", pinNumber);
+            insertCommand.Parameters.AddWithValue("@money", money);
+
+
             sqlConnection.Open();
 
-            success = insertCommand.ExecuteNonQuery();
-
+            insertCommand.ExecuteNonQuery();
             sqlConnection.Close();
 
-            return success;
         }
 
 

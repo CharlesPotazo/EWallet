@@ -41,6 +41,12 @@ namespace EWalletBusinessLogic
             return sqlDbData.GetUserByAccNum(accountNumber);
         }
 
+        public void RegisterUser( int accountNumber, string userName, string pinNumber)
+        {
+            // Here you can add business logic such as validation, hashing the pinNumber, etc.
+            sqlDbData.AddUser(accountNumber, userName, pinNumber);
+        }
+
         //public bool CreateUser(int accountNumber, string pinNumber, string userName)
         //{
         //    //return sqlDbData.AddUser(accountNumber, pinNumber, userName);

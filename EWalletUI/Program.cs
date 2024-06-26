@@ -24,7 +24,7 @@ namespace EWalletUI
                     Login();
                     break;
                 case 2:
-                    //to follow po 
+                    Register();
                     break;
                 default:
                     Console.WriteLine("Invalid");
@@ -91,11 +91,34 @@ namespace EWalletUI
                         Console.WriteLine("Succefully");
                         break;
                     case 3:
+                        Login(); break;
+                    default:
                         break;
 
                 }
             } 
         
         }
+
+        public static void Register() {
+            Console.WriteLine("Welcome to the E-Wallet system!");
+
+            Console.Write("Enter your username: ");
+            string userName = Console.ReadLine();
+
+            Console.Write("Enter your 6 Digit PIN: ");
+            string pinNumber = Console.ReadLine();
+
+            Console.Write("Enter your account number: ");
+            int accountNumber = int.Parse(Console.ReadLine());
+
+            UserServices userService = new UserServices();
+            userService.RegisterUser(accountNumber, userName,pinNumber);
+
+            Console.WriteLine("User registered successfully!");
+
+
+        }
+
     }
 }

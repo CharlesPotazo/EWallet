@@ -1,53 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EWalletModels;
 using EWalletDataLayer;
-using System.Data.SqlClient;
-using System.Security.Principal;
 
 namespace EWalletBusinessLogic
 {
     public class CashServices
     {
-        UserServices userServices = new UserServices();
-        SqlDbData sqlDbData = new SqlDbData();
-        public void CashIn(int accountNumber, int amount)
+        private SqlDbData sqlDbData = new SqlDbData();
+
+        public void CashIn(string accountNumber, decimal amount)
         {
-            var account = userServices.GetUserByAccNum(accountNumber);
+            var account = sqlDbData.GetUserByAccNum(accountNumber);
             if (account != null)
             {
-                account.money = amount + account.money;
+                account.money = account.money + amount;
                 sqlDbData.UpdateMoney(account);
             }
         }
 
-        public bool CashOut(int accountNumber, int amount)
+        public bool CashOut(string accountNumber, decimal amount)
         {
-            bool result = false;
-            var account = userServices.GetUserByAccNum(accountNumber);
+            var account = sqlDbData.GetUserByAccNum(accountNumber);
             if (account != null && account.money >= amount)
             {
                 account.money = account.money - amount;
                 sqlDbData.UpdateMoney(account);
-                result = true;
-                return result;
+                return true;
             }
-            return result;
+            return false;
         }
 
-        public void transferMoney( int transferTo, int amount)
+        public bool TransferMoney(string sender, decimal amount, string receiver)
         {
-            User accountTransfer = userServices.GetUserByAccNum(transferTo);
+            var senderAccount = sqlDbData.GetUserByAccNum(sender);
+            var receiverAccount = sqlDbData.GetUserByAccNum(receiver);
 
-            if (accountTransfer.accountNumber.Equals(transferTo))
+            if (senderAccount != null && receiverAccount != null && senderAccount.money >= amount)
             {
-                accountTransfer.money = accountTransfer.money + amount;
-                sqlDbData.UpdateMoney(accountTransfer);
-            }
-        }
+                senderAccount.money = senderAccount.money - amount;
+                receiverAccount.money = receiverAccount.money + amount;
 
+                sqlDbData.UpdateMoney(senderAccount);
+                sqlDbData.UpdateMoney(receiverAccount);
+
+                return true;
+            }
+            return false;
+        }
     }
 }

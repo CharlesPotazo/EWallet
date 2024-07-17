@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel.Design;
 using System.Numerics;
 using System.Security.Principal;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EWalletUI
 {
@@ -56,7 +55,7 @@ namespace EWalletUI
             try
             {
                 Console.WriteLine("Enter Account Number: ");
-                int accountNumber = Convert.ToInt32(Console.ReadLine());
+                string accountNumber = Console.ReadLine();
 
                 Console.WriteLine("Enter Pin Num: ");
                 string pinNumber = Console.ReadLine();
@@ -85,7 +84,7 @@ namespace EWalletUI
             Login();
         }
 
-        public static void Menu(int accountNumber)
+        public static void Menu(string accountNumber)
         {
 
             while (true)
@@ -126,14 +125,23 @@ namespace EWalletUI
                             }
                             break;
                         case 3:
-                            Console.Write("Send to:(input account number) ");
-                            int TransferTo = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Send to(input account number): ");
+                            string TransferTo = Console.ReadLine();
                             Console.Write("Amount: ");
                             int amount = Convert.ToInt32(Console.ReadLine());
 
-                            cashService.transferMoney( TransferTo, amount);
-                            deductMoney(user, amount);
-                            Console.Write($"Succefully Transferred {amount} to {TransferTo} ");
+
+                            bool res = cashService.TransferMoney(accountNumber, amount, TransferTo);
+
+                            if (res)
+                            {
+                                Console.Write($"Succefully Transferred {amount} to {TransferTo}\n ");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Transfer failed. Either Account Number is not valid or your balance is not enough\n");
+                            }
+
                             break;
                         case 4:
                             GreetingPage();
@@ -179,17 +187,17 @@ namespace EWalletUI
                                     if (answer == "yes")
                                     {
                                         Console.WriteLine("Enter Pin Number:");
-                                        string PinNumber = Console.ReadLine();
-                                        if (PinNumber == user.pinNumber)
-                                        {Console.WriteLine("We hope we give you the best service! Until we meet again c-casher HAHA");
-                                             GreetingPage();
-                                             userService.DeleteUser(accountNumber); //Itu naman po di ko mapaga huhuh 
-                                             
-     
-                                        }else
-                                            {
-                                                Console.WriteLine("Withdraw all the money first");
-                                            }
+                                        string pinNumber = Console.ReadLine();
+
+                                        if (userService.DeleteUser(accountNumber, pinNumber))
+                                        {
+                                            Console.WriteLine("User Deleted Successfully! Bye Bye Until we meet again ka c-casher");
+                                            GreetingPage();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Pin Number incorrect or  you need to withdraw all the money first.");
+                                        }
                                     }
                                 }
                                 else if (option == 4)
@@ -222,22 +230,16 @@ namespace EWalletUI
             string pinNumber = Console.ReadLine();
 
             Console.Write("|Enter your account number: ");
-            int accountNumber = int.Parse(Console.ReadLine());
+            string accountNumber = Console.ReadLine();
 
             UserServices userService = new UserServices();
             userService.RegisterUser(accountNumber, userName, pinNumber);
 
             Console.WriteLine("You are now Registered! " + userName);
 
-
-        }
-
+            GreetingPage();
 
 
-        private static void deductMoney(User user, int amount) //miss ito pa lang po yung way na napagana ko feel ko po sa mga constructors yung mali ... FIFIGURE OUT KO PA PO HUHU
-        {
-            CashServices cashServices = new CashServices();
-            cashServices.CashOut(user.accountNumber, amount);
         }
     }
 }

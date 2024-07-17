@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
 using EWalletModels;
-using System.Security.Principal;
-using System.Numerics;
-using System.Reflection.PortableExecutable;
-using System.Data.SqlTypes;
 
 namespace EWalletDataLayer
 {
     public class SqlDbData
     {
-        string connectionString
-      = "Data Source =LAPTOP-QH3G5ET7\\SQLEXPRESS; Initial Catalog = EWallet; Integrated Security = True;";
-
-        SqlConnection sqlConnection;
+        private string connectionString = "Data Source=LAPTOP-QH3G5ET7\\SQLEXPRESS;Initial Catalog=EWallet;Integrated Security=True;";
+        private SqlConnection sqlConnection;
 
         public SqlDbData()
         {
@@ -27,23 +18,19 @@ namespace EWalletDataLayer
         public List<User> GetUsers()
         {
             string selectStatement = "SELECT accountNumber, pinNumber FROM Records";
-
             SqlCommand selectCommand = new SqlCommand(selectStatement, sqlConnection);
 
             sqlConnection.Open();
             List<User> users = new List<User>();
-
             SqlDataReader reader = selectCommand.ExecuteReader();
 
             while (reader.Read())
             {
-                int accountNumber = Convert.ToInt32(reader["accountNumber"]);
-                string pinNumber = reader["pinNumber"].ToString();
-
-                User readUser = new User();
-                readUser.accountNumber = accountNumber;
-                readUser.pinNumber = pinNumber;
-
+                User readUser = new User
+                {
+                    accountNumber = reader["accountNumber"].ToString(),
+                    pinNumber = reader["pinNumber"].ToString()
+                };
                 users.Add(readUser);
             }
 
@@ -51,50 +38,47 @@ namespace EWalletDataLayer
             return users;
         }
 
-        public User GetUserByAccNum(int accountNumber)
+        public User GetUserByAccNum(string accountNumber)
         {
             sqlConnection.Open();
-
             SqlCommand findCommand = new SqlCommand("SELECT * FROM Records WHERE accountNumber = @accountNumber", sqlConnection);
             findCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
-
             SqlDataReader reader = findCommand.ExecuteReader();
+
             if (reader.Read())
             {
-                return new User
+                User user = new User
                 {
-                    accountNumber = Convert.ToInt32(reader["accountNumber"]),
+                    accountNumber = reader["accountNumber"].ToString(),
                     userName = reader["userName"].ToString(),
                     money = Convert.ToDecimal(reader["money"]),
-                    pinNumber = reader["pinNumber"].ToString(),
+                    pinNumber = reader["pinNumber"].ToString()
                 };
+                sqlConnection.Close();
+                return user;
             }
+
             sqlConnection.Close();
             return null;
         }
 
-
-
         public void UpdateMoney(User user)
         {
-            string updateStatement = $"UPDATE Records SET money = @money WHERE accountNumber = @accountNumber";
+            string updateStatement = "UPDATE Records SET money = @money WHERE accountNumber = @accountNumber";
             SqlCommand updateCommand = new SqlCommand(updateStatement, sqlConnection);
-            sqlConnection.Open();
 
             updateCommand.Parameters.AddWithValue("@money", user.money);
             updateCommand.Parameters.AddWithValue("@accountNumber", user.accountNumber);
 
+            sqlConnection.Open();
             updateCommand.ExecuteNonQuery();
-
             sqlConnection.Close();
         }
 
-        public void AddUser(int accountNumber, string userName, string pinNumber)
+        public void AddUser(string accountNumber, string userName, string pinNumber)
         {
             decimal money = 0;
-
-            string insertStatement = "INSERT INTO Records (AccountNumber, UserName, PinNumber, money) VALUES (@accountNumber, @userName, @pinNumber, @money)";
-
+            string insertStatement = "INSERT INTO Records (accountNumber, userName, pinNumber, money) VALUES (@accountNumber, @userName, @pinNumber, @money)";
             SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection);
 
             insertCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
@@ -102,45 +86,40 @@ namespace EWalletDataLayer
             insertCommand.Parameters.AddWithValue("@pinNumber", pinNumber);
             insertCommand.Parameters.AddWithValue("@money", money);
 
-
             sqlConnection.Open();
-
             insertCommand.ExecuteNonQuery();
             sqlConnection.Close();
-
         }
-        
-        public void UpdateUserPassword(int accountNumber, string pinNumber)
+
+        public void UpdateUserPassword(string accountNumber, string pinNumber)
         {
-            string updateStatement = $"UPDATE Records SET pinNumber = @pinNumber WHERE accountNumber = @accountNumber";
+            string updateStatement = "UPDATE Records SET pinNumber = @pinNumber WHERE accountNumber = @accountNumber";
             SqlCommand updateCommand = new SqlCommand(updateStatement, sqlConnection);
-            sqlConnection.Open();
 
             updateCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             updateCommand.Parameters.AddWithValue("@pinNumber", pinNumber);
 
-            updateCommand.ExecuteNonQuery();
-
-            sqlConnection.Close();
-
-        }
-        public void UpdateUsername(int accountNumber, string userName)
-        {
-            string updateStatement = $"UPDATE Records SET userName = @userName WHERE accountNumber = @accountNumber";
-            SqlCommand updateCommand = new SqlCommand(updateStatement, sqlConnection);
             sqlConnection.Open();
+            updateCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+        }
+
+        public void UpdateUsername(string accountNumber, string userName)
+        {
+            string updateStatement = "UPDATE Records SET userName = @userName WHERE accountNumber = @accountNumber";
+            SqlCommand updateCommand = new SqlCommand(updateStatement, sqlConnection);
 
             updateCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             updateCommand.Parameters.AddWithValue("@userName", userName);
 
+            sqlConnection.Open();
             updateCommand.ExecuteNonQuery();
-
             sqlConnection.Close();
         }
 
-        public void DeleteUser(int accountNumber)
+        public void DeleteUser(string accountNumber)
         {
-            string deleteStatement = $"DELETE FROM Records WHERE accountNumber = @accountNumber";
+            string deleteStatement = "DELETE FROM Records WHERE accountNumber = @accountNumber";
             SqlCommand deleteCommand = new SqlCommand(deleteStatement, sqlConnection);
             sqlConnection.Open();
 
@@ -149,7 +128,7 @@ namespace EWalletDataLayer
             deleteCommand.ExecuteNonQuery();
 
             sqlConnection.Close();
-
         }
+
     }
 }

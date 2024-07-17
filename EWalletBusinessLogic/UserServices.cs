@@ -9,12 +9,13 @@ namespace EWalletBusinessLogic
 {
     public class UserServices
     {
-        UserData data = new UserData();
-        SqlDbData sqlDbData = new SqlDbData();
+        UserData data;
+        private SqlDbData sqlDbData;
+
         public UserServices()
         {
-            UserData data = new UserData();
-            SqlDbData sqlDbData = new SqlDbData();
+            data = new UserData();
+            sqlDbData = new SqlDbData();
         }
 
 
@@ -24,7 +25,7 @@ namespace EWalletBusinessLogic
         }
 
 
-        public bool verifyUser(int accountNumber, string pinNumber)
+        public bool verifyUser(string accountNumber, string pinNumber)
         {
             bool result = new bool();
             foreach (var users in GetAllUser())
@@ -38,41 +39,35 @@ namespace EWalletBusinessLogic
             return result;
         }
 
-        public User GetUserByAccNum(int accountNumber)
+        public User GetUserByAccNum(string accountNumber)
         {
             return sqlDbData.GetUserByAccNum(accountNumber);
         }
 
-        public void RegisterUser(int accountNumber, string userName, string pinNumber)
+        public void RegisterUser(string accountNumber, string userName, string pinNumber)
         {
-            sqlDbData.AddUser(accountNumber, userName, pinNumber);
+            data.AddUser(accountNumber, userName, pinNumber);
         }
 
-        public void UpdateUserPassword(int accountNumber,string pinNumber)
+        public void UpdateUserPassword(string accountNumber,string pinNumber)
         {
             data.UpdateUserPassword(accountNumber, pinNumber);
         }
 
-        public void UpdateUsername(int accountNumber, string username)
+        public void UpdateUsername(string accountNumber, string username)
         {
             data.UpdateUsername(accountNumber, username);
         }
 
-        public void DeleteUser(int accountNumber)
+        public bool DeleteUser(string accountNumber, string pinNumber)
         {
-            
-            var account = GetUserByAccNum(accountNumber);
-
-            
-            if (account != null && account.money == 0)
+            var user = sqlDbData.GetUserByAccNum(accountNumber);
+            if (user != null && user.pinNumber == pinNumber && user.money <= 0)
             {
                 data.DeleteUser(accountNumber);
-               
+                return true;
             }
-            else{
-            
-            }
-           
+            return false;
         }
     }
 }

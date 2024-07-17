@@ -3,41 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
 using EWalletModels;
-using System.Numerics;
 
 namespace EWalletDataLayer
 {
     public class UserData
     {
-        List<User> users;
-        SqlDbData sqlData;
+        private SqlDbData sqlData;
+
         public UserData()
         {
-            users = new List<User>();
             sqlData = new SqlDbData();
         }
 
         public List<User> GetUsers()
         {
-            users = sqlData.GetUsers();
-            return users;
+            return sqlData.GetUsers();
         }
 
-        public void UpdateUserPassword(int accountNumber,string pinNumber)
+        public void UpdateUserPassword(string accountNumber, string pinNumber)
         {
             sqlData.UpdateUserPassword(accountNumber, pinNumber);
         }
 
-        public void UpdateUsername(int accountNumber, string username)
+        public void UpdateUsername(string accountNumber, string username)
         {
             sqlData.UpdateUsername(accountNumber, username);
         }
 
-        public void DeleteUser(int accountNumber)
+        public void AddUser(string accountNumber, string username,string pinNumber)
         {
-            sqlData.DeleteUser(accountNumber);
+            sqlData.AddUser(accountNumber, username, pinNumber);
+        }
+
+        public bool DeleteUser(string accountNumber)
+        {
+            var user = sqlData.GetUserByAccNum(accountNumber);
+            if (user != null)
+            {
+                sqlData.DeleteUser(accountNumber);
+                return true;
+            }
+            return false;
         }
     }
 }

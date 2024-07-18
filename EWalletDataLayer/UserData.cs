@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using EWalletModels;
@@ -21,19 +22,38 @@ namespace EWalletDataLayer
             return sqlData.GetUsers();
         }
 
-        public void UpdateUserPassword(string accountNumber, string pinNumber)
+        public bool UpdateUserPassword(string accountNumber, string pinNumber)
         {
-            sqlData.UpdateUserPassword(accountNumber, pinNumber);
+            var user = sqlData.GetUserByAccNum(accountNumber);
+            if (user != null)
+            {
+                sqlData.UpdateUserPassword(accountNumber, pinNumber);
+                return true;
+            }
+            return false;
         }
 
-        public void UpdateUsername(string accountNumber, string username)
+        public bool UpdateUsername(string accountNumber, string username)
         {
-            sqlData.UpdateUsername(accountNumber, username);
+            var user = sqlData.GetUserByAccNum(accountNumber);
+            if (user != null)
+            {
+                sqlData.UpdateUsername(accountNumber, username);
+                return true;
+            }
+            return false;
         }
 
-        public void AddUser(string accountNumber, string username,string pinNumber)
+        public bool AddUser(string accountNumber, string username,string pinNumber)
         {
-            sqlData.AddUser(accountNumber, username, pinNumber);
+            var user = sqlData.GetUserByAccNum(accountNumber);
+            if (user == null)
+            {
+                sqlData.AddUser(accountNumber, username, pinNumber);
+                return true;
+            }
+            return false;
+            
         }
 
         public bool DeleteUser(string accountNumber)

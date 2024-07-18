@@ -23,8 +23,6 @@ namespace EWalletBusinessLogic
         {
             return data.GetUsers();
         }
-
-
         public bool verifyUser(string accountNumber, string pinNumber)
         {
             bool result = new bool();
@@ -44,30 +42,25 @@ namespace EWalletBusinessLogic
             return sqlDbData.GetUserByAccNum(accountNumber);
         }
 
-        public void RegisterUser(string accountNumber, string userName, string pinNumber)
+        public bool RegisterUser(string accountNumber, string userName, string pinNumber)
         {
-            data.AddUser(accountNumber, userName, pinNumber);
+            return data.AddUser(accountNumber, userName, pinNumber);
         }
 
-        public void UpdateUserPassword(string accountNumber,string pinNumber)
+        public bool UpdateUserPassword(string accountNumber,string pinNumber)
         {
-            data.UpdateUserPassword(accountNumber, pinNumber);
+                return data.UpdateUserPassword(accountNumber,pinNumber);
+                
         }
 
-        public void UpdateUsername(string accountNumber, string username)
+        public bool UpdateUsername(string accountNumber, string username)
         {
-            data.UpdateUsername(accountNumber, username);
+            return data.UpdateUsername(accountNumber, username);
         }
 
         public bool DeleteUser(string accountNumber, string pinNumber)
         {
-            var user = sqlDbData.GetUserByAccNum(accountNumber);
-            if (user != null && user.pinNumber == pinNumber && user.money <= 0)
-            {
-                data.DeleteUser(accountNumber);
-                return true;
-            }
-            return false;
+            return data.DeleteUser(accountNumber);
         }
     }
 }

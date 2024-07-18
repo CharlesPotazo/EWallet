@@ -1,4 +1,5 @@
 ﻿using EWalletBusinessLogic;
+using EWalletDataLayer;
 using EWalletModels;
 using System;
 using System.ComponentModel.Design;
@@ -12,6 +13,7 @@ namespace EWalletUI
         static void Main(string[] args)
         {
             GreetingPage();
+            
         }
 
         public static void GreetingPage()
@@ -108,8 +110,13 @@ namespace EWalletUI
                         case 1:
                             Console.Write("CASH-IN\nEnter amount: ");
                             int CashInAmount = Convert.ToInt32(Console.ReadLine());
-                            cashService.CashIn(accountNumber, CashInAmount);
-                            Console.WriteLine("Successful!!!!");
+                            if (cashService.CashIn(accountNumber, CashInAmount))
+                            {
+                                Console.WriteLine("Successful");
+                            }
+                            else {
+                                Console.WriteLine("Unsuccessful");
+                            }
                             break;
                         case 2:
                             Console.Write("Enter amount to withdraw: ");
@@ -155,7 +162,7 @@ namespace EWalletUI
 
                                 if (option == 1)
                                 {
-                                    Console.WriteLine("What is your new username Number?");
+                                    Console.WriteLine("What is your new username?");
                                     string newUserName = Console.ReadLine();
 
                                     Console.WriteLine("are you sure?[Yes/No]");
@@ -233,9 +240,15 @@ namespace EWalletUI
             string accountNumber = Console.ReadLine();
 
             UserServices userService = new UserServices();
-            userService.RegisterUser(accountNumber, userName, pinNumber);
+            if (userService.RegisterUser(accountNumber, userName, pinNumber))
+            {
+                Console.WriteLine("You are now Registered! " + userName);
+            }
+            else {
+                Console.WriteLine("Either AccountNumber is Taken or Invalid Inputs ");
+            }
 
-            Console.WriteLine("You are now Registered! " + userName);
+            
 
             GreetingPage();
 

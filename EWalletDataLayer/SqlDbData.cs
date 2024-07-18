@@ -7,17 +7,19 @@ namespace EWalletDataLayer
 {
     public class SqlDbData
     {
-        private string connectionString = "Data Source=LAPTOP-QH3G5ET7\\SQLEXPRESS;Initial Catalog=EWallet;Integrated Security=True;";
-        private SqlConnection sqlConnection;
+         string connectionString// = "Data Source=LAPTOP-QH3G5ET7\\SQLEXPRESS;Initial Catalog=EWallet;Integrated Security=True;"; //Local host ssms
+           = "Server = tcp:20.6.32.91,1433;Database =EWallet;User Id = sa; Password = Password1234"; //Azure Virtual machine
+        SqlConnection sqlConnection;
 
         public SqlDbData()
         {
             sqlConnection = new SqlConnection(connectionString);
         }
 
+
         public List<User> GetUsers()
         {
-            string selectStatement = "SELECT accountNumber, pinNumber FROM Records";
+            string selectStatement = "SELECT * FROM Records";
             SqlCommand selectCommand = new SqlCommand(selectStatement, sqlConnection);
 
             sqlConnection.Open();
@@ -29,7 +31,9 @@ namespace EWalletDataLayer
                 User readUser = new User
                 {
                     accountNumber = reader["accountNumber"].ToString(),
-                    pinNumber = reader["pinNumber"].ToString()
+                    pinNumber = reader["pinNumber"].ToString(),
+                    userName = reader["userName"].ToString(),
+                    money = Convert.ToDecimal(reader["money"])
                 };
                 users.Add(readUser);
             }

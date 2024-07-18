@@ -8,14 +8,17 @@ namespace EWalletBusinessLogic
     {
         private SqlDbData sqlDbData = new SqlDbData();
 
-        public void CashIn(string accountNumber, decimal amount)
+        public bool CashIn(string accountNumber, decimal amount)
         {
+
             var account = sqlDbData.GetUserByAccNum(accountNumber);
             if (account != null)
             {
                 account.money = account.money + amount;
                 sqlDbData.UpdateMoney(account);
+                return true;
             }
+            return false;
         }
 
         public bool CashOut(string accountNumber, decimal amount)

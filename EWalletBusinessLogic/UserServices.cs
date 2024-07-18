@@ -1,9 +1,5 @@
 ﻿using EWalletModels;
 using EWalletDataLayer;
-using System.Diagnostics.CodeAnalysis;
-using System.Data.SqlClient;
-using System.Security.Principal;
-using System.Numerics;
 
 namespace EWalletBusinessLogic
 {

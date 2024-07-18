@@ -1,10 +1,5 @@
 ﻿using EWalletBusinessLogic;
-using EWalletDataLayer;
-using EWalletModels;
 using System;
-using System.ComponentModel.Design;
-using System.Numerics;
-using System.Security.Principal;
 
 namespace EWalletUI
 {

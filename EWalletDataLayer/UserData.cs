@@ -44,12 +44,12 @@ namespace EWalletDataLayer
             return false;
         }
 
-        public bool AddUser(string accountNumber, string username,string pinNumber)
+        public bool AddUser(string accountNumber, string username,string pinNumber, string email)
         {
             var user = sqlData.GetUserByAccNum(accountNumber);
             if (user == null)
             {
-                sqlData.AddUser(accountNumber, username, pinNumber);
+                sqlData.AddUser(accountNumber, username, pinNumber, email);
                 return true;
             }
             return false;

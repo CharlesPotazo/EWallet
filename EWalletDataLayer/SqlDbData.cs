@@ -7,9 +7,9 @@ namespace EWalletDataLayer
 {
     public class SqlDbData
     {
-         string connectionString// = "Data Source=LAPTOP-QH3G5ET7\\SQLEXPRESS;Initial Catalog=EWallet;Integrated Security=True;"; //Local host ssms
-           = "Server = tcp:20.6.32.91,1433;Database =EWallet;User Id = sa; Password = Password1234"; //Azure Virtual machine
-        SqlConnection sqlConnection;
+         string connectionString = "Data Source=LAPTOP-NV0945RI\\SQLEXPRESS;Initial Catalog=EWallet;Integrated Security=True;"; //Local host ssms
+           //= "Server = tcp:20.6.32.91,1433;Database =EWallet;User Id = sa; Password = Password1234"; //Azure Virtual machine
+        SqlConnection sqlConnection; 
 
         public SqlDbData()
         {
@@ -33,7 +33,8 @@ namespace EWalletDataLayer
                     accountNumber = reader["accountNumber"].ToString(),
                     pinNumber = reader["pinNumber"].ToString(),
                     userName = reader["userName"].ToString(),
-                    money = Convert.ToDecimal(reader["money"])
+                    money = Convert.ToDecimal(reader["money"]),
+                    email = reader["email"].ToString()
                 };
                 users.Add(readUser);
             }
@@ -56,7 +57,8 @@ namespace EWalletDataLayer
                     accountNumber = reader["accountNumber"].ToString(),
                     userName = reader["userName"].ToString(),
                     money = Convert.ToDecimal(reader["money"]),
-                    pinNumber = reader["pinNumber"].ToString()
+                    pinNumber = reader["pinNumber"].ToString(),
+                    email = reader["email"].ToString()
                 };
                 sqlConnection.Close();
                 return user;
@@ -79,16 +81,17 @@ namespace EWalletDataLayer
             sqlConnection.Close();
         }
 
-        public void AddUser(string accountNumber, string userName, string pinNumber)
+        public void AddUser(string accountNumber, string userName, string pinNumber, string email)
         {
             decimal money = 0;
-            string insertStatement = "INSERT INTO Records (accountNumber, userName, pinNumber, money) VALUES (@accountNumber, @userName, @pinNumber, @money)";
+            string insertStatement = "INSERT INTO Records (accountNumber, userName, pinNumber, money, email) VALUES (@accountNumber, @userName, @pinNumber, @money, @email)";
             SqlCommand insertCommand = new SqlCommand(insertStatement, sqlConnection);
 
             insertCommand.Parameters.AddWithValue("@accountNumber", accountNumber);
             insertCommand.Parameters.AddWithValue("@userName", userName);
             insertCommand.Parameters.AddWithValue("@pinNumber", pinNumber);
             insertCommand.Parameters.AddWithValue("@money", money);
+            insertCommand.Parameters.AddWithValue("@email", email);
 
             sqlConnection.Open();
             insertCommand.ExecuteNonQuery();

@@ -1,5 +1,6 @@
 ﻿using EWalletModels;
 using EWalletDataLayer;
+using System.Collections.Generic;
 
 namespace EWalletBusinessLogic
 {
@@ -38,9 +39,9 @@ namespace EWalletBusinessLogic
             return sqlDbData.GetUserByAccNum(accountNumber);
         }
 
-        public bool RegisterUser(string accountNumber, string userName, string pinNumber)
+        public bool RegisterUser(string accountNumber, string userName, string pinNumber, string email)
         {
-            return data.AddUser(accountNumber, userName, pinNumber);
+            return data.AddUser(accountNumber, userName, pinNumber, email);
         }
 
         public bool UpdateUserPassword(string accountNumber,string pinNumber)

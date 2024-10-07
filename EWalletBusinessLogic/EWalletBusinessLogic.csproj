@@ -2,9 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.8.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EWalletDataLayer\EWalletDataLayer.csproj" />

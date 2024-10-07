@@ -8,84 +8,125 @@ namespace EWalletUI
         static void Main(string[] args)
         {
             GreetingPage();
-            
         }
 
         public static void GreetingPage()
         {
-            Console.WriteLine("------------------------------------------");
-            Console.WriteLine("|           Welcome to (C)-cash          |");
-            Console.WriteLine("|         *endorser BINI PICTURE*        |");
-            Console.WriteLine("|     *with Salamin,Salamin BG music*    |");
-            Console.WriteLine("|Choose a number:                        |");
-            Console.WriteLine("|1.Login                                 |");
-            Console.WriteLine("|2.Register                              |");
-            try
+            while (true) 
             {
-                int choice = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("------------------------------------------");
+                Console.WriteLine("|           Welcome to (C)-cash          |");
+                Console.WriteLine("|         *endorser BINI PICTURE*        |");
+                Console.WriteLine("|     *with Salamin, Salamin BG music*    |");
+                Console.WriteLine("|Choose a number:                        |");
+                Console.WriteLine("|1. Login                                 |");
+                Console.WriteLine("|2. Register                              |");
 
-                switch (choice)
+                try
                 {
-                    case 1:
-                        Login();
-                        break;
-                    case 2:
-                        Register();
-                        break;
-                    default:
-                        Console.WriteLine("Invalid");
-                        GreetingPage();
-                        break;
+                    int choice = Convert.ToInt32(Console.ReadLine());
+
+                    switch (choice)
+                    {
+                        case 1:
+                            Login();
+                            break; 
+                        case 2:
+                            Register();
+                            break; 
+                        default:
+                            Console.WriteLine("Invalid choice. Please try again.");
+                            break; 
+                    }
+                }
+                catch (FormatException) 
+                {
+                    Console.WriteLine("That is not a number! Please try again.");
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("That is not a number!");
-                GreetingPage();
-            }
         }
+
+
+        //public static void Login()
+        //{
+        //    UserServices loginService = new UserServices();
+
+        //    try
+        //    {
+        //        Console.WriteLine("Enter Account Number: ");
+        //        string accountNumber = Console.ReadLine();
+
+        //        Console.WriteLine("Enter Pin Num: ");
+        //        string pinNumber = Console.ReadLine();
+
+        //        if (loginService.verifyUser(accountNumber, pinNumber))
+        //        {
+        //            Console.WriteLine("Success");
+        //            Menu(accountNumber);
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("Either the account number or pin number is Wrong! Do you want to Retry?[Yes/No]");
+        //            string answer = Console.ReadLine().Trim().ToUpper();
+        //            if (answer == "YES")
+        //            {
+        //                Login();
+        //            }
+        //            else
+        //            {
+        //                GreetingPage();
+        //            }
+        //        }
+        //    }
+        //    catch { }
+        //    Console.WriteLine("The inputted Value is in wrong format ");
+        //    Login();
+        //}
 
         public static void Login()
         {
             UserServices loginService = new UserServices();
 
-            try
+            while (true)
             {
-                Console.WriteLine("Enter Account Number: ");
-                string accountNumber = Console.ReadLine();
-
-                Console.WriteLine("Enter Pin Num: ");
-                string pinNumber = Console.ReadLine();
-
-                if (loginService.verifyUser(accountNumber, pinNumber))
+                try
                 {
-                    Console.WriteLine("Success");
-                    Menu(accountNumber);
-                }
-                else
-                {
-                    Console.WriteLine("Either the account number or pin number is Wrong! Do you want to Retry?[Yes/No]");
-                    string answer = Console.ReadLine().Trim().ToUpper();
-                    if (answer == "YES")
+                    Console.WriteLine("Enter Account Number: ");
+                    string accountNumber = Console.ReadLine();
+
+                    Console.WriteLine("Enter Pin Num: ");
+                    string pinNumber = Console.ReadLine();
+
+                    if (loginService.verifyUser(accountNumber, pinNumber))
                     {
-                        Login();
+                        Console.WriteLine("Success");
+                        Menu(accountNumber);
                     }
                     else
                     {
-                        GreetingPage();
+                        Console.WriteLine("Either the account number or pin number is Wrong! Do you want to Retry?[Yes/No]");
+                        string answer = Console.ReadLine().Trim().ToUpper();
+                        if (answer != "YES")
+                        {
+                            GreetingPage();
+                            break;
+                        }
                     }
                 }
+                catch { 
+                Console.WriteLine("The inputted Value is in wrong format ");
+                Login();
+                }
             }
-            catch { }
-            Console.WriteLine("The inputted Value is in wrong format ");
-            Login();
         }
+
 
         public static void Menu(string accountNumber)
         {
 
             while (true)
             {
+                EmailServices emailService = new EmailServices();
                 UserServices userService = new UserServices();
                 CashServices cashService = new CashServices();
                 var user = userService.GetUserByAccNum(accountNumber);
@@ -108,6 +149,7 @@ namespace EWalletUI
                             if (cashService.CashIn(accountNumber, CashInAmount))
                             {
                                 Console.WriteLine("Successful");
+                                emailService.emailCashin(user.userName,user.email, CashInAmount," (C)-Cash System");
                             }
                             else {
                                 Console.WriteLine("Unsuccessful");
@@ -120,6 +162,7 @@ namespace EWalletUI
                             if (result)
                             {
                                 Console.WriteLine($"You successfully withdrawed {CashOutAmount} to your account");
+                                emailService.emailCashout(user.userName, accountNumber, user.email, CashOutAmount);
                             }
                             else
                             {
@@ -128,16 +171,16 @@ namespace EWalletUI
                             break;
                         case 3:
                             Console.Write("Send to(input account number): ");
-                            string TransferTo = Console.ReadLine();
+                            string receiverAccNum = Console.ReadLine();
                             Console.Write("Amount: ");
                             int amount = Convert.ToInt32(Console.ReadLine());
-
-
-                            bool res = cashService.TransferMoney(accountNumber, amount, TransferTo);
-
+                            var receiver = userService.GetUserByAccNum(receiverAccNum);
+                            bool res = cashService.TransferMoney(accountNumber, amount, receiverAccNum);
+                            
                             if (res)
                             {
-                                Console.Write($"Succefully Transferred {amount} to {TransferTo}\n ");
+                                Console.Write($"Succefully Transferred {amount} to {receiverAccNum} ");
+                                emailService.emailTransferMoney(user.userName,accountNumber,user.email,receiver.userName,receiverAccNum,receiver.email,amount);
                             }
                             else
                             {
@@ -234,10 +277,17 @@ namespace EWalletUI
             Console.Write("|Enter your account number: ");
             string accountNumber = Console.ReadLine();
 
+            Console.Write("|Enter your email: ");
+            string email = Console.ReadLine();
+
             UserServices userService = new UserServices();
-            if (userService.RegisterUser(accountNumber, userName, pinNumber))
+
+            EmailServices emailServices = new EmailServices();
+
+            if (userService.RegisterUser(accountNumber, userName, pinNumber, email))
             {
                 Console.WriteLine("You are now Registered! " + userName);
+                emailServices.emailNewUser(userName, email);
             }
             else {
                 Console.WriteLine("Either AccountNumber is Taken or Invalid Inputs ");

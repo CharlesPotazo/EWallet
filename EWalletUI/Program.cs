@@ -5,9 +5,11 @@ namespace EWalletUI
 {
     public class Program
     {
+
         static void Main(string[] args)
         {
             GreetingPage();
+
         }
 
         public static void GreetingPage()
@@ -45,43 +47,6 @@ namespace EWalletUI
                 }
             }
         }
-
-
-        //public static void Login()
-        //{
-        //    UserServices loginService = new UserServices();
-
-        //    try
-        //    {
-        //        Console.WriteLine("Enter Account Number: ");
-        //        string accountNumber = Console.ReadLine();
-
-        //        Console.WriteLine("Enter Pin Num: ");
-        //        string pinNumber = Console.ReadLine();
-
-        //        if (loginService.verifyUser(accountNumber, pinNumber))
-        //        {
-        //            Console.WriteLine("Success");
-        //            Menu(accountNumber);
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("Either the account number or pin number is Wrong! Do you want to Retry?[Yes/No]");
-        //            string answer = Console.ReadLine().Trim().ToUpper();
-        //            if (answer == "YES")
-        //            {
-        //                Login();
-        //            }
-        //            else
-        //            {
-        //                GreetingPage();
-        //            }
-        //        }
-        //    }
-        //    catch { }
-        //    Console.WriteLine("The inputted Value is in wrong format ");
-        //    Login();
-        //}
 
         public static void Login()
         {
@@ -146,10 +111,10 @@ namespace EWalletUI
                         case 1:
                             Console.Write("CASH-IN\nEnter amount: ");
                             int CashInAmount = Convert.ToInt32(Console.ReadLine());
-                            if (cashService.CashIn(accountNumber, CashInAmount))
+                            if (cashService.CashIn(accountNumber, CashInAmount) && emailService.emailCashin(user.userName, user.email, CashInAmount, " (C)-Cash System"))
                             {
                                 Console.WriteLine("Successful");
-                                emailService.emailCashin(user.userName,user.email, CashInAmount," (C)-Cash System");
+                                Console.WriteLine("Email sent successfully through Mailtrap.");
                             }
                             else {
                                 Console.WriteLine("Unsuccessful");
@@ -158,11 +123,10 @@ namespace EWalletUI
                         case 2:
                             Console.Write("Enter amount to withdraw: ");
                             int CashOutAmount = Convert.ToInt32(Console.ReadLine());
-                            bool result = cashService.CashOut(accountNumber, CashOutAmount);
-                            if (result)
+                            if (cashService.CashOut(accountNumber, CashOutAmount) && emailService.emailCashout(user.userName, accountNumber, user.email, CashOutAmount))
                             {
                                 Console.WriteLine($"You successfully withdrawed {CashOutAmount} to your account");
-                                emailService.emailCashout(user.userName, accountNumber, user.email, CashOutAmount);
+                                Console.WriteLine("Email sent successfully through Mailtrap.");
                             }
                             else
                             {
@@ -175,12 +139,12 @@ namespace EWalletUI
                             Console.Write("Amount: ");
                             int amount = Convert.ToInt32(Console.ReadLine());
                             var receiver = userService.GetUserByAccNum(receiverAccNum);
-                            bool res = cashService.TransferMoney(accountNumber, amount, receiverAccNum);
-                            
-                            if (res)
+                        
+                            if (cashService.TransferMoney(accountNumber, amount, receiverAccNum) &&
+                                emailService.emailTransferMoney(user.userName, accountNumber, user.email, receiver.userName, receiverAccNum, receiver.email, amount))
                             {
                                 Console.Write($"Succefully Transferred {amount} to {receiverAccNum} ");
-                                emailService.emailTransferMoney(user.userName,accountNumber,user.email,receiver.userName,receiverAccNum,receiver.email,amount);
+                                Console.WriteLine("Email sent successfully through Mailtrap.");
                             }
                             else
                             {
@@ -192,66 +156,7 @@ namespace EWalletUI
                             GreetingPage();
                             break;
                         case 5:
-
-                            while (true)
-                            {
-                                Console.WriteLine("Settings\n Choose a number\n(1.Rename Username) (2.Update Password) (3. Delete Account) (4.Back to Menu)");
-                                int option = Convert.ToInt32(Console.ReadLine());
-
-                                if (option == 1)
-                                {
-                                    Console.WriteLine("What is your new username?");
-                                    string newUserName = Console.ReadLine();
-
-                                    Console.WriteLine("are you sure?[Yes/No]");
-                                    string answer = Console.ReadLine().Trim().ToUpper();
-                                    if (answer == "YES")
-                                    {
-                                        userService.UpdateUsername(accountNumber, newUserName);
-                                        Console.WriteLine($"You have successfully change your User Number to {newUserName}");
-                                    }
-                                }
-                                else if (option == 2)
-                                {
-                                    Console.WriteLine("What is your new Pin Number?");
-                                    string newPinNumber = Console.ReadLine();
-
-                                    Console.WriteLine("are you sure?[Yes/No]");
-                                    string answer = Console.ReadLine().Trim().ToUpper();
-                                    if (answer == "YES")
-                                    {
-                                        userService.UpdateUserPassword(accountNumber, newPinNumber);
-                                        Console.WriteLine($"You have successfully change your Pin Number to {newPinNumber}");
-                                    }
-                                }
-                                else if (option == 3)
-                                {
-                                    Console.WriteLine("Are you sure?:[Yes/No]");
-                                    string answer = Console.ReadLine().ToLower().Trim(); ;
-
-                                    if (answer == "yes")
-                                    {
-                                        Console.WriteLine("Enter Pin Number:");
-                                        string pinNumber = Console.ReadLine();
-
-                                        if (userService.DeleteUser(accountNumber, pinNumber))
-                                        {
-                                            Console.WriteLine("User Deleted Successfully! Bye Bye Until we meet again ka c-casher");
-                                            GreetingPage();
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("Pin Number incorrect or  you need to withdraw all the money first.");
-                                        }
-                                    }
-                                }
-                                else if (option == 4)
-                                {
-                                    break;
-                                }
-                            }
-
-
+                            Settings(accountNumber);
                             break;
                             }
                 }
@@ -259,6 +164,69 @@ namespace EWalletUI
                 {
                     Console.WriteLine("Invalid inputted format");
 
+                }
+            }
+
+        }
+
+        public static void Settings(string accountNumber) {
+
+            UserServices userService = new UserServices();
+            while (true)
+            {
+                Console.WriteLine("Settings\n Choose a number\n(1.Rename Username) (2.Update Password) (3. Delete Account) (4.Back to Menu)");
+                int option = Convert.ToInt32(Console.ReadLine());
+
+                if (option == 1)
+                {
+                    Console.WriteLine("What is your new username?");
+                    string newUserName = Console.ReadLine();
+
+                    Console.WriteLine("are you sure?[Yes/No]");
+                    string answer = Console.ReadLine().Trim().ToUpper();
+                    if (answer == "YES")
+                    {
+                        userService.UpdateUsername(accountNumber, newUserName);
+                        Console.WriteLine($"You have successfully change your User Number to {newUserName}");
+                    }
+                }
+                else if (option == 2)
+                {
+                    Console.WriteLine("What is your new Pin Number?");
+                    string newPinNumber = Console.ReadLine();
+
+                    Console.WriteLine("are you sure?[Yes/No]");
+                    string answer = Console.ReadLine().Trim().ToUpper();
+                    if (answer == "YES")
+                    {
+                        userService.UpdateUserPassword(accountNumber, newPinNumber);
+                        Console.WriteLine($"You have successfully change your Pin Number to {newPinNumber}");
+                    }
+                }
+                else if (option == 3)
+                {
+                    Console.WriteLine("Are you sure?:[Yes/No]");
+                    string answer = Console.ReadLine().ToLower().Trim(); ;
+
+                    if (answer == "yes")
+                    {
+                        Console.WriteLine("Enter Pin Number:");
+                        string pinNumber = Console.ReadLine();
+
+                        if (userService.DeleteUser(accountNumber, pinNumber))
+                        {
+                            Console.WriteLine("User Deleted Successfully! Bye Bye Until we meet again ka c-casher");
+                            GreetingPage();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Pin Number incorrect or  you need to withdraw all the money first.");
+                        }
+                    }
+                }
+                else if (option == 4)
+                {
+                    break;
                 }
             }
 
@@ -284,10 +252,10 @@ namespace EWalletUI
 
             EmailServices emailServices = new EmailServices();
 
-            if (userService.RegisterUser(accountNumber, userName, pinNumber, email))
+            if (userService.RegisterUser(accountNumber, userName, pinNumber, email) && emailServices.emailNewUser(userName, email) )
             {
                 Console.WriteLine("You are now Registered! " + userName);
-                emailServices.emailNewUser(userName, email);
+                Console.WriteLine("Email sent successfully through Mailtrap.");
             }
             else {
                 Console.WriteLine("Either AccountNumber is Taken or Invalid Inputs ");

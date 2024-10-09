@@ -13,7 +13,8 @@ namespace EWalletBusinessLogic
 {
     public class EmailServices
     {
-        public void emailNewUser(string username, string email)
+       
+        public bool emailNewUser(string username, string email)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("(C)-Cash", "do-not-reply@ccashemail.com"));
@@ -41,12 +42,12 @@ namespace EWalletBusinessLogic
                     client.Authenticate("8ec65822a4a8c1", "2a1539095e13a9");
 
                     client.Send(message);
-                    Console.WriteLine("Email sent successfully through Mailtrap.");
+
+                    return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
-
+                    return false;
                 }
                 finally
                 {
@@ -55,7 +56,7 @@ namespace EWalletBusinessLogic
             }
         }
 
-        public void emailCashin(string receiver, string emailReceiver, decimal amount, string sender)
+        public bool emailCashin(string receiver, string emailReceiver, decimal amount, string sender)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("(C)-Cash", "do-not-reply@ccashemail.com"));
@@ -78,11 +79,11 @@ namespace EWalletBusinessLogic
                     client.Authenticate("8ec65822a4a8c1", "2a1539095e13a9");
 
                     client.Send(message);
-                    Console.WriteLine("Email sent successfully through Mailtrap.");
+                    return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
+                    return false;
 
                 }
                 finally
@@ -92,7 +93,7 @@ namespace EWalletBusinessLogic
             }
         }
 
-        public void emailCashout(string user, string userAccNum, string emailUser, decimal amount)
+        public bool emailCashout(string user, string userAccNum, string emailUser, decimal amount)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("(C)-Cash", "do-not-reply@ccashemail.com"));
@@ -115,11 +116,11 @@ namespace EWalletBusinessLogic
                     client.Authenticate("8ec65822a4a8c1", "2a1539095e13a9");
 
                     client.Send(message);
-                    Console.WriteLine("Email sent successfully through Mailtrap.");
+                    return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
+                    return false;
 
                 }
                 finally
@@ -129,7 +130,7 @@ namespace EWalletBusinessLogic
             }
         }
 
-        public void emailTransferMoney(string senderName, string senderAccNum, string senderEmail, string receiverName, string receiverAccNum, string receiverEmail, decimal amount)
+        public bool emailTransferMoney(string senderName, string senderAccNum, string senderEmail, string receiverName, string receiverAccNum, string receiverEmail, decimal amount)
         {
             emailCashin(receiverName, receiverEmail, amount, senderAccNum);
             var message = new MimeMessage();
@@ -153,11 +154,49 @@ namespace EWalletBusinessLogic
                     client.Authenticate("8ec65822a4a8c1", "2a1539095e13a9");
 
                     client.Send(message);
-                    Console.WriteLine("Email sent successfully through Mailtrap.");
+                    return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
+                    return false;
+
+                }
+                finally
+                {
+                    client.Disconnect(true);
+                }
+            }
+        }
+
+        public bool emailChangeUsernam(string senderName, string senderAccNum, string senderEmail, string receiverName, string receiverAccNum, string receiverEmail, decimal amount)
+        {
+            emailCashin(receiverName, receiverEmail, amount, senderAccNum);
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("(C)-Cash", "do-not-reply@ccashemail.com"));
+            message.To.Add(new MailboxAddress(senderName, senderEmail));
+            message.Subject = "Money Transaction";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $"<h1>Withdraw Money! </h1>" +
+                $"<br><p>You transfer <strong>P{amount}</strong> to <strong>Account Number: </strong>{receiverAccNum} <strong> Username: </strong>{receiverName} </p>" +
+                "<br><p>-(C)-Cash admin <i> date today</i></p>"
+            };
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    client.Connect("sandbox.smtp.mailtrap.io", 2525, MailKit.Security.SecureSocketOptions.StartTls);
+
+                    client.Authenticate("8ec65822a4a8c1", "2a1539095e13a9");
+
+                    client.Send(message);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
 
                 }
                 finally
@@ -168,6 +207,5 @@ namespace EWalletBusinessLogic
 
 
         }
-
     }
 }

@@ -7,23 +7,71 @@ namespace EWalletBusinessLogic
     public class UserServices
     {
         UserData data;
-        private SqlDbData sqlDbData;
 
         public UserServices()
         {
             data = new UserData();
-            sqlDbData = new SqlDbData();
         }
-
 
         public List<User> GetAllUser()
         {
-            return data.GetUsers();
+            return data.GetAllUser();
         }
+
+        public List<User> GetAllActiveStatus()
+        {
+
+            List<User> allUsers = GetAllUser();
+            List<User> activeUser = new List<User>();
+
+            foreach (User user in allUsers)
+            {
+                if (user.status == true)
+                {
+                    activeUser.Add(user);
+                }
+            }
+            return activeUser;
+        }
+
+        public bool CheckIfEmailExist(string email)
+        {
+            return GetUserByEmail(email) != null;
+        }
+
+        public User GetUserByAccNum(string accountNumber)
+        {
+            List<User> activeUser = GetAllActiveStatus();
+
+            foreach (User user in activeUser)
+            {
+                if (user.accountNumber == accountNumber)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            List<User> allUser = GetAllUser();
+
+            foreach (User user in allUser)
+            {
+                if (user.email == email)
+                {
+                    return user;
+                }
+
+            }
+            return null;
+        }
+
         public bool verifyUser(string accountNumber, string pinNumber)
         {
             bool result = new bool();
-            foreach (var users in GetAllUser())
+            foreach (var users in GetAllActiveStatus())
             {
                 if (users.accountNumber == accountNumber && users.pinNumber == pinNumber)
                 {
@@ -34,30 +82,65 @@ namespace EWalletBusinessLogic
             return result;
         }
 
-        public User GetUserByAccNum(string accountNumber)
+        //For now reserve i dont see the use pa
+        //public bool IsActive(string accountNumber) {
+        //    User user = GetUserByAccNumb(accountNumber);
+        //    if (user != null && user.status != false)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+
+        //}
+        public bool AddUser(string accountNumber, string userName, string pinNumber, string email)
         {
-            return sqlDbData.GetUserByAccNum(accountNumber);
+            bool result = false;
+            User user = GetUserByEmail(email);
+            if (user == null)
+            {
+                data.AddUser(accountNumber, userName, pinNumber, email);
+                return true;
+            }
+            return false;
+        }
+        public bool ReactivateUser(string email)
+        {
+            User user = GetUserByEmail(email);
+            if (user != null && user.status != true)
+            {
+                data.ActivateUser(user.email);
+                return true;
+            }
+            return false;
         }
 
-        public bool RegisterUser(string accountNumber, string userName, string pinNumber, string email)
+        public bool DeactivateUser(string accountNumber, string pinNumber)
         {
-            return data.AddUser(accountNumber, userName, pinNumber, email);
+            User user = GetUserByAccNum(accountNumber);
+            if (user != null && user.status && user.pinNumber == pinNumber && user.money <= 0)
+            {
+                data.DeactivateUser(accountNumber);
+                return true;
+            }
+            return false;
         }
 
-        public bool UpdateUserPassword(string accountNumber,string pinNumber)
+        public void UpdateUserPassword(string accountNumber, string pinNumber)
         {
-                return data.UpdateUserPassword(accountNumber,pinNumber);
-                
+            data.UpdateUserPassword(accountNumber, pinNumber);
         }
 
-        public bool UpdateUsername(string accountNumber, string username)
+        public void UpdateUsername(string accountNumber, string userName)
         {
-            return data.UpdateUsername(accountNumber, username);
+            data.UpdateUsername(accountNumber, userName);
         }
 
-        public bool DeleteUser(string accountNumber, string pinNumber)
+        public void UpdateEmail(string accountNumber, string email)
         {
-            return data.DeleteUser(accountNumber);
+            data.UpdateEmail(accountNumber, email);
         }
+
+
+
     }
 }

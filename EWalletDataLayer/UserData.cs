@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using EWalletModels;
 
 namespace EWalletDataLayer
@@ -17,54 +12,45 @@ namespace EWalletDataLayer
             sqlData = new SqlDbData();
         }
 
-        public List<User> GetUsers()
+        public List<User> GetAllUser()
         {
-            return sqlData.GetUsers();
+            return sqlData.GetAllUsers();
         }
 
-        public bool UpdateUserPassword(string accountNumber, string pinNumber)
+        public void ActivateUser(string email)
         {
-            var user = sqlData.GetUserByAccNum(accountNumber);
-            if (user != null)
-            {
-                sqlData.UpdateUserPassword(accountNumber, pinNumber);
-                return true;
-            }
-            return false;
+            sqlData.Activate(email);
         }
 
-        public bool UpdateUsername(string accountNumber, string username)
+        public void DeactivateUser(string accountnumber)
         {
-            var user = sqlData.GetUserByAccNum(accountNumber);
-            if (user != null)
-            {
-                sqlData.UpdateUsername(accountNumber, username);
-                return true;
-            }
-            return false;
+            sqlData.Deactivate(accountnumber);
         }
 
-        public bool AddUser(string accountNumber, string username,string pinNumber, string email)
+        public void AddUser(string accountNumber, string userName, string pinNumber, string email)
         {
-            var user = sqlData.GetUserByAccNum(accountNumber);
-            if (user == null)
-            {
-                sqlData.AddUser(accountNumber, username, pinNumber, email);
-                return true;
-            }
-            return false;
-            
+            sqlData.AddUser(accountNumber, userName, pinNumber, email);
         }
 
-        public bool DeleteUser(string accountNumber)
+        public void UpdateUserPassword(string accountNumber, string pinNumber)
         {
-            var user = sqlData.GetUserByAccNum(accountNumber);
-            if (user != null)
-            {
-                sqlData.DeleteUser(accountNumber);
-                return true;
-            }
-            return false;
+            sqlData.UpdateUserPassword(accountNumber, pinNumber);
         }
+
+        public void UpdateUsername(string accountNumber, string userName)
+        {
+            sqlData.UpdateUsername(accountNumber, userName);
+        }
+
+        public void UpdateEmail(string accountNumber, string email)
+        {
+            sqlData.UpdateEmail(accountNumber, email);
+        }
+
+        public void UpdateMoney(User user)
+        {
+            sqlData.UpdateMoney(user);
+        }
+
     }
 }

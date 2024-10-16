@@ -6,16 +6,17 @@ namespace EWalletBusinessLogic
 {
     public class CashServices
     {
-        private SqlDbData sqlDbData = new SqlDbData();
+        private UserData data = new UserData();
+        private UserServices userServices = new UserServices();
 
         public bool CashIn(string accountNumber, decimal amount)
         {
 
-            var account = sqlDbData.GetUserByAccNum(accountNumber);
+            var account = userServices.GetUserByAccNum(accountNumber);
             if (account != null)
             {
                 account.money = account.money + amount;
-                sqlDbData.UpdateMoney(account);
+                data.UpdateMoney(account);
                 return true;
             }
             return false;
@@ -23,11 +24,11 @@ namespace EWalletBusinessLogic
 
         public bool CashOut(string accountNumber, decimal amount)
         {
-            var account = sqlDbData.GetUserByAccNum(accountNumber);
+            var account = userServices.GetUserByAccNum(accountNumber);
             if (account != null && account.money >= amount)
             {
                 account.money = account.money - amount;
-                sqlDbData.UpdateMoney(account);
+                data.UpdateMoney(account);
                 return true;
             }
             return false;
@@ -35,16 +36,16 @@ namespace EWalletBusinessLogic
 
         public bool TransferMoney(string sender, decimal amount, string receiver)
         {
-            var senderAccount = sqlDbData.GetUserByAccNum(sender);
-            var receiverAccount = sqlDbData.GetUserByAccNum(receiver);
+            var senderAccount = userServices.GetUserByAccNum(sender);
+            var receiverAccount = userServices.GetUserByAccNum(receiver);
 
-            if (senderAccount != null && receiverAccount != null && senderAccount.money >= amount)
+            if (senderAccount != null && receiverAccount != null && senderAccount.money >= amount && sender != receiver)
             {
                 senderAccount.money = senderAccount.money - amount;
                 receiverAccount.money = receiverAccount.money + amount;
 
-                sqlDbData.UpdateMoney(senderAccount);
-                sqlDbData.UpdateMoney(receiverAccount);
+                data.UpdateMoney(senderAccount);
+                data.UpdateMoney(receiverAccount);
 
                 return true;
             }

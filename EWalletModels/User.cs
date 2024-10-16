@@ -4,6 +4,6 @@
     {
         public string userName, pinNumber, accountNumber, email;
         public decimal money;
+        public bool status;
     }
 }
- 

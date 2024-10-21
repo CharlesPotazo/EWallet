@@ -6,5 +6,6 @@
         public string userName { get; set; }
         public string pinNumber { get; set; }
         public decimal money { get; set; }
+        public string email { get; set; }
     }
 }

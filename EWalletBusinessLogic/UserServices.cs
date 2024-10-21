@@ -95,8 +95,9 @@ namespace EWalletBusinessLogic
         public bool AddUser(string accountNumber, string userName, string pinNumber, string email)
         {
             bool result = false;
-            User user = GetUserByEmail(email);
-            if (user == null)
+            User userEmail = GetUserByEmail(email) ;
+            User userAccountNum = GetUserByAccNum(accountNumber);
+            if (userEmail == null && userAccountNum == null)
             {
                 data.AddUser(accountNumber, userName, pinNumber, email);
                 return true;
@@ -127,17 +128,17 @@ namespace EWalletBusinessLogic
 
         public void UpdateUserPassword(string accountNumber, string pinNumber)
         {
-            data.UpdateUserPassword(accountNumber, pinNumber);
+             data.UpdateUserPassword(accountNumber, pinNumber);
         }
 
         public void UpdateUsername(string accountNumber, string userName)
         {
-            data.UpdateUsername(accountNumber, userName);
+             data.UpdateUsername(accountNumber, userName);
         }
 
-        public void UpdateEmail(string accountNumber, string email)
+        public void  UpdateEmail(string accountNumber, string email)
         {
-            data.UpdateEmail(accountNumber, email);
+             data.UpdateEmail(accountNumber, email);
         }
 
 
